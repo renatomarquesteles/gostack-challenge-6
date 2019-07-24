@@ -75,3 +75,10 @@ export const Author = styled.Text`
   color: #666;
   margin-top: 2px;
 `;
+
+export const LoadingIndicator = styled.ActivityIndicator.attrs({
+  size: 'large',
+  color: '#7159c1',
+})`
+  margin: 15px 0;
+`;
