@@ -85,3 +85,11 @@ export const ProfileButtonText = styled.Text`
   color: #fff;
   text-transform: uppercase;
 `;
+
+export const RemoveButton = styled(RectButton)`
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 10px;
+  border-radius: 10px;
+`;

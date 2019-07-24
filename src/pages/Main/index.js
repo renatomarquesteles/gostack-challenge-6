@@ -17,6 +17,7 @@ import {
   Bio,
   ProfileButton,
   ProfileButtonText,
+  RemoveButton,
 } from './styles';
 
 export default class Main extends Component {
@@ -81,6 +82,15 @@ export default class Main extends Component {
     navigation.navigate('User', { user });
   };
 
+  handleRemoveUser = userToRemove => {
+    const { users } = this.state;
+    const position = users.indexOf(userToRemove);
+    users.splice(position, 1);
+
+    this.setState({ users });
+    AsyncStorage.setItem('users', JSON.stringify(users));
+  };
+
   render() {
     const { users, newUser, loading } = this.state;
     return (
@@ -108,6 +118,9 @@ export default class Main extends Component {
           keyExtractor={user => user.login}
           renderItem={({ item }) => (
             <User>
+              <RemoveButton onPress={() => this.handleRemoveUser(item)}>
+                <Icon name="close" size={20} color="rgba(0,0,0,0.6)" />
+              </RemoveButton>
               <Avatar source={{ uri: item.avatar }} />
               <Name>{item.name}</Name>
               <Bio>{item.bio}</Bio>
