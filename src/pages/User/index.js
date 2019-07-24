@@ -32,6 +32,7 @@ export default class User extends Component {
     stars: [],
     loading: false,
     page: 1,
+    refreshing: false,
   };
 
   async componentDidMount() {
@@ -39,10 +40,12 @@ export default class User extends Component {
   }
 
   async load(page = 1) {
-    const { stars } = this.state;
+    const { stars, refreshing } = this.state;
     const { navigation } = this.props;
     const user = navigation.getParam('user');
-    this.setState({ loading: true });
+
+    if (!refreshing) this.setState({ loading: true });
+
     const response = await api.get(`/users/${user.login}/starred`, {
       params: { page },
     });
@@ -56,6 +59,7 @@ export default class User extends Component {
       stars: page >= 2 ? [...stars, ...response.data] : response.data,
       page,
       loading: false,
+      refreshing: false,
     });
   }
 
@@ -65,9 +69,15 @@ export default class User extends Component {
     this.load(nextPage);
   }
 
+  async refreshList() {
+    await this.setState({ refreshing: true });
+
+    this.load();
+  }
+
   render() {
     const { navigation } = this.props;
-    const { stars, loading } = this.state;
+    const { stars, loading, refreshing } = this.state;
     const user = navigation.getParam('user');
 
     return (
@@ -79,6 +89,8 @@ export default class User extends Component {
         </Header>
         {loading && <LoadingIndicator />}
         <Stars
+          onRefresh={() => this.refreshList()}
+          refreshing={refreshing}
           onEndReachedThreshold={0.2}
           onEndReached={() => this.loadMore()}
           data={stars}
